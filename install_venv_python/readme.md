@@ -16,8 +16,6 @@ For best practice reasons, the recommended name is `.venv`. But you can name it 
 
 <br/>
 
-<br/>
-
 # Considerations
 
 First, you have to know if you already have `pip` and `Python` installed
