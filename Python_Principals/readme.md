@@ -1,6 +1,6 @@
 # Como Programar em Python
 
-## - [ ] Declaração de variavel
+- [ ] Declaração de variavel
 
 <img src="img/Screenshot 2026-01-01 at 8.07.00 PM.png" />
 
