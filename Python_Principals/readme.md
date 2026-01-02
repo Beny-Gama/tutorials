@@ -101,7 +101,6 @@ print("terminou")
 criancas = ["Manu", "Vini", "Selina"]
 for item in criancas:
     print (item)
-
 ```
 
 Nesse caso ele vai printar cada item na lista
@@ -263,6 +262,12 @@ Dessa meneira pegar cada elento de uma lista dentro de outra lista no python.
 
 ```py
 for i in range(3): print(i)
+```
+
+```py
+for index, character in enumerate(characters)
+    character_map|character].append(index)
+character_map
 ```
 
 #### podemos crar uma validaçao em uma linha:
