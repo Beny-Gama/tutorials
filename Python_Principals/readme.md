@@ -184,7 +184,7 @@ Selina 2
 
 ### Como usar o `for` com o `enumerate`:
 
-O `enumerate` serve para estrar `index` e `valor` ao mesmo tempo de uma lista.
+O `enumerate` conseque entretar tando o `index` quanto o `valor` ao mesmo tempo de uma lista.
 
 ```py
 characters = ["Krillin", "Goku", "Vegeta", "Gohan", "Piccolo"]
@@ -211,7 +211,7 @@ for index, character in enumerate(characters):
 4 Piccolo
 ```
 
-    obs: é emlhor usar o e numerate puro porque reduz a complecidade.
+`obs: É melhor usar o enumerate puro, porque reduz a complexidade.`
 
 ---
 
