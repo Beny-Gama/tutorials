@@ -104,7 +104,7 @@ for item in criancas:
 
 ```
 
-nesse caso ele vai printar cada item na lista
+Nesse caso ele vai printar cada item na lista
 
 ### como usar o `for` em uma string:
 
@@ -115,7 +115,7 @@ for letra in canal:
     print(letra)
 ```
 
-nesse caso ele vai printar cada letra em um string.
+Nesse caso ele vai printar cada letra em um string.
 
 ### Como usar o `for` com o `range`:
 
@@ -124,7 +124,7 @@ for i in range(20):
     print(i)
 ```
 
-nesse caso, os numeros printados são 0 ao 19
+Nesse caso, os numeros printados são 0 ao 19
 
 #### podemos usar o `renge` com as sequintes condicionais:
 
@@ -135,7 +135,7 @@ for i in range(6,20):
     print(i)
 ```
 
-nesse caso, os numeros printados são: 5 a 19
+Nesse caso, os numeros printados são: 5 a 19
 
 #### podemos dizer qual o intervalo em que nos colocamos esses numeros:
 
@@ -146,13 +146,13 @@ for i in range(6,20,2):
     print(i)
 ```
 
-nesse caso, os numeros printados são: 5 a 19, mas pulando de 1 em 1:
+Nesse caso, os numeros printados são: 5 a 19, mas pulando de 1 em 1:
 
 Ex: 5, 7, 9, 11, 13, 15, 17, 19
 
 ### Como usar o `for` com o `renge` e `len`:
 
-baseado no tamanho da nossa lista o `for` e vai nos entregar o `index` dessa lista.
+Baseado no tamanho da nossa lista o `for` e vai nos entregar o `index` dessa lista.
 
 ```py
 criancas = ["Manu", "Vini", "Selina"]
@@ -167,7 +167,7 @@ Nesse caso, os numeros printados são: 0 a 2,
 Podemos combinar isso com o `index` na nossa declaracão de dados:
 
 ```py
-criancas = ["Manu", "Vini", "Selina"]
+Criancas = ["Manu", "Vini", "Selina"]
 for index in range(len(criancas):
     print(criancas[index], index)
 ```
@@ -180,7 +180,7 @@ Vini 1
 Selina 2
 ```
 
----
+<br/>
 
 ### Como usar o `for` com o `enumerate`:
 
