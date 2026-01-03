@@ -284,7 +284,9 @@ O que acontece em cada loop:
 
 # Futures
 
-### Imagine que você tenha uma função assíncrona e precise produzir vários resultados ao longo da sua execução. Usar `return` não funciona nesse caso, porque ele encerra a função imediatamente, impedindo que ela continue executando. Para resolver isso, usamos `set_result()`, que permite disponibilizar resultados enquanto a função ainda está em andamento. Assim, é possível obter valores específicos sem precisar esperar a função terminar completamente e sem interromper sua execução.
+### Temos duas situações em que o Futures pode ser utilizado:
+
+### Imagine que você tenha uma função assíncrona e precise produzir vários resultados ao longo da sua execução. Usar `return` não funciona nesse caso, porque ele encerra a função imediatamente, impedindo que ela continue executando. Para resolver isso, usamos `set_result()`, que permite disponibilizar resultados enquanto a função ainda está em andamento. Assim, é possível obter valores específicos sem precisar esperar a função terminar completamente e sem interromper sua execução. Também podemos usar `set_result()` quando precisamos disponibilizar uma informação enquanto a função ainda não terminou sua execução.
 
 - Podendo ser usado tanto para:
 
@@ -317,7 +319,7 @@ async def main():
 asyncio.run(main())
 ```
 
-vamos entedner esse codigo:
+vamos entender esse código:
 
 `get_running_loop()` → Pega o event loop que já está rodando no momento.  
 Ele é quem organiza e controla tudo o que acontece de forma assíncrona.
