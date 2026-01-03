@@ -24,7 +24,7 @@ asyncio.run(main())
 
 ## async → await (simples)
 
-#### Quando executamos uma função que possui `async`, quando rodar o programa, ao se deparar com um `await`, libera o fluxo para que a próxima função agendada possa ser executada.
+1. #### Quando executamos uma função que possui `async`, quando rodar o programa, ao se deparar com um `await`, libera o fluxo para que a próxima função agendada possa ser executada.
 
 Em uma função normal (sem `async`), é necessário aguardar toda a execução da função para que outra possa começar.
 
@@ -76,10 +76,46 @@ Enquanto isso, o Python não bloqueia o programa. Ele pode executar outras taref
 `result = await task`
 → Aqui o código diz: “Espere essa tarefa terminar antes de continuar”. Enquanto espera, o event loop pode executar outras coroutines
 
-##
-
-####
+2. Vamos tentar quebrar esse colocando o `result = await task` no final do nosso codigo. e ver o resltado:
 
 ```python
+import asyncio
+# Define a coroutine that simulates a time-consuming task.
+async def fetch_data(delay):
+    print ("1 - Fetching data...")
+    await asyncio.sleep(delay) # Simulate an I/O operation with a sleep.
+    print ("2 - Data fetched")
+    return {"data": "Some data"}
+    # Return some data.
 
+# Define another coroutine that calls the first coroutine
+async def main():
+    print ("3 - Start of main coroutine")
+    task = fetch_data(2)
+    print ("4 - End of main coroutine")
+
+    result = await task
+    print (f"5 - Received result: {result}")
+
+# Run the main coroutine
+asyncio.run(main())
 ```
+
+terminal:
+
+```bash
+3 - Start of main coroutine
+4 - End of main coroutine
+1 - Fetching data...
+2 - Data fetched
+5 - Received result: {'data': 'Some data'}
+```
+
+Veja que agora nosso código parece estar fora de ordem e não funciona como muitos esperariam.
+Isso acontece porque a função assíncrona só começa a ser executada quando encontra um `await`.
+
+Até esse momento, a coroutine apenas foi criada, mas não está rodando de fato. É como se a função ficasse em standby, aguardando ser acionada pelo `await`.
+
+Em outras palavras:
+criar uma função `async` não executa o código automaticamente.
+Somente quando usamos `await` é que o Python entrega essa função para o event loop e inicia sua execução.

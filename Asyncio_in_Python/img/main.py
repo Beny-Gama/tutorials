@@ -11,11 +11,10 @@ async def fetch_data(delay):
 # Define another coroutine that calls the first coroutine
 async def main():
     print ("3 - Start of main coroutine")
-    task = fetch_data(2)
-    # Await the fetch_data coroutine, pausing execution of main until fetch_data completes
+    task = fetch_data(2)    
+    print ("4 - End of main coroutine")
     result = await task
-    print (f"4 - Received result: {result}")
-    print ("5 - End of main coroutine")
+    print (f"5 - Received result: {result}")
 
 # Run the main coroutine
 asyncio.run(main())
