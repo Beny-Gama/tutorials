@@ -1,20 +1,21 @@
-
 import asyncio
-# Define a coroutine that simulates a time-consuming task.
-async def fetch_data(delay):
-    print ("1 - Fetching data...")
-    await asyncio.sleep(delay) # Simulate an I/O operation with a sleep.
-    print ("2 - Data fetched")
-    return {"data": "Some data"}
-    # Return some data.
 
-# Define another coroutine that calls the first coroutine
+async def fetch_data(id, sleep_time):
+    print(f"Coroutine {id} starting to fetch data.")
+    await asyncio.sleep(sleep_time)
+    return {"id": id, "data": f"Sample data from coroutine {id}"}
+
 async def main():
-    print ("3 - Start of main coroutine")
-    task = fetch_data(2)    
-    print ("4 - End of main coroutine")
-    result = await task
-    print (f"5 - Received result: {result}")
+    # Create tasks for running coroutines concurrently
+    task1 = asyncio.create_task(fetch_data(1, 2))
+    task2 = asyncio.create_task(fetch_data(2, 3))
+    result1 = await task1
+    result2 = await task2
 
-# Run the main coroutine
+    task3 = asyncio.create_task(fetch_data(3, 1))
+    result3 = await task3
+
+    print(result1, result2, result3)
+
 asyncio.run(main())
+
