@@ -226,6 +226,8 @@ asyncio.run(main())
 
 #### Nas mais novas verções do python podemos emcontrar esse `taskGrup()` para tratar trarar de vairas funções `async` ao mesmo tempo. Mas agora, difernete do `gather()` podemos fazer tratamento de erros. As custas de deixar o codigo mais verboso.
 
+#### Com o `taskGrup()` nos criamos um **async context manager** o que na pratica, é uma uma maneira de gerenciar vairas funções assincronas.
+
 ```py
 import asyncio
 
@@ -238,8 +240,8 @@ async def main():
     tasks = []
 
     async with asyncio.TaskGroup() as tg:
-        for i, sleep_time in enumerate([2, 1, 3], start=1):
-            task = tg.create_task(fetch_data(i, sleep_time))
+        for index, sleep_time in enumerate([2, 1, 3], start=1):
+            task = tg.create_task(fetch_data(index, sleep_time))
             tasks.append(task)
 
     # After the TaskGroup block, all tasks have completed
@@ -250,3 +252,79 @@ async def main():
 
 asyncio.run(main())
 ```
+
+Vamos esplicar esse codigo:
+
+`async with asyncio.TaskGroup() as tg:` → Precisamos usar esse `with` para dar asseso ao `as tg`. E Depois criamos o `asyncio.TaskGroup()` estanciar esse
+`
+
+`for i, sleep_time in enumerate([2, 1, 3], start=1):` → Criamos esse `for` com o `enumerate()` com a lista de `[2, 1, 3]` que vai comessar com o indice: 1 `start=1`
+
+`task = tg.create_task(fetch_data(index, sleep_time))` → Usamos o `create_task()` como usamos anteriomente.
+
+`tasks.append(task)` → Esse é um exemplo de tratamento de erros e possivel.
+
+`results = [task.result() for task in tasks]` → Essa uma manera simples de ler uma lista ou json file.
+Vamos reescrever sem “atalhos”:
+
+```py
+results = []
+
+for task in tasks:
+    resultado = task.result()
+    results.append(resultado)
+```
+
+O que acontece em cada loop:
+
+1. Pega uma Task
+2. Chama `.result()`
+3. Recupera o valor retornado pelo return da coroutine
+4. Guarda esse valor em results
+
+# Futures
+
+### Imagine que você tenha uma função assíncrona e precise produzir vários resultados ao longo da sua execução. Usar `return` não funciona nesse caso, porque ele encerra a função imediatamente, impedindo que ela continue executando. Para resolver isso, usamos `set_result()`, que permite disponibilizar resultados enquanto a função ainda está em andamento. Assim, é possível obter valores específicos sem precisar esperar a função terminar completamente e sem interromper sua execução.
+
+- Podendo ser usado tanto para:
+
+  - Múltiplos resultados na mesma função.
+  - Para pegar um resultado enquanto a função ainda está em andamento.
+
+```python
+import asyncio
+
+async def set_future_result(future, value):
+    await asyncio.sleep(2)
+    # Set the result of the future
+    future.set_result(value)
+    print(f"Set the future's result to: {value}")
+
+async def main():
+    # Create a future object
+    loop = asyncio.get_running_loop()
+    future = loop.create_future()
+
+    # Schedule setting the future's result
+    asyncio.create_task(
+        set_future_result(future, "Future result is ready")
+    )
+
+    # Wait for the future's result
+    result = await future
+    print(f"Received the future's result: {result}")
+
+asyncio.run(main())
+```
+
+vamos entedner esse codigo:
+
+`get_running_loop()` → Pega o event loop que já está rodando no momento.  
+Ele é quem organiza e controla tudo o que acontece de forma assíncrona.
+
+`create_future()` → Cria um `Future` vazio, como uma promessa de que um valor vai existir depois.  
+Esse valor poderá ser esperado usando `await`.
+
+`asyncio.create_task()` → Cria uma tarefa que roda **em segundo plano**, sem bloquear o resto do código. Ela agenda uma função assíncrona para começar a executar imediatamente. É usada quando você quer **disparar uma coroutine e continuar o fluxo normal** do programa.
+
+`set_result()` → Coloca o valor final no `Future`. Isso marca o `Future` como pronto e libera quem estava esperando por ele.

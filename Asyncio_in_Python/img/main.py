@@ -1,21 +1,23 @@
 import asyncio
 
-async def fetch_data(id, sleep_time):
-    print(f"Coroutine {id} starting to fetch data.")
-    await asyncio.sleep(sleep_time)
-    return {"id": id, "data": f"Sample data from coroutine {id}"}
+async def set_future_result(future, value):
+    await asyncio.sleep(2)
+    # Set the result of the future
+    future.set_result(value)
+    print(f"Set the future's result to: {value}")
 
 async def main():
-    # Create tasks for running coroutines concurrently
-    task1 = asyncio.create_task(fetch_data(1, 2))
-    task2 = asyncio.create_task(fetch_data(2, 3))
-    result1 = await task1
-    result2 = await task2
+    # Create a future object
+    loop = asyncio.get_running_loop()
+    future = loop.create_future()
 
-    task3 = asyncio.create_task(fetch_data(3, 1))
-    result3 = await task3
+    # Schedule setting the future's result
+    asyncio.create_task(
+        set_future_result(future, "Future result is ready")
+    )
 
-    print(result1, result2, result3)
+    # Wait for the future's result
+    result = await future
+    print(f"Received the future's result: {result}")
 
 asyncio.run(main())
-
