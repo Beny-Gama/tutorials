@@ -29,7 +29,6 @@ asyncio.run(main())
 Em uma função normal (sem `async`), é necessário aguardar toda a execução da função para que outra possa começar.
 
 ```python
-
 import asyncio
 # Define a coroutine that simulates a time-consuming task.
 async def fetch_data(delay):
@@ -282,7 +281,7 @@ O que acontece em cada loop:
 3. Recupera o valor retornado pelo return da coroutine
 4. Guarda esse valor em results
 
-# Futures
+# Futures `set_result()`
 
 ### Temos duas situações em que o Futures pode ser utilizado:
 
@@ -330,3 +329,105 @@ Esse valor poderá ser esperado usando `await`.
 `asyncio.create_task()` → Cria uma tarefa que roda **em segundo plano**, sem bloquear o resto do código. Ela agenda uma função assíncrona para começar a executar imediatamente. É usada quando você quer **disparar uma coroutine e continuar o fluxo normal** do programa.
 
 `set_result()` → Coloca o valor final no `Future`. Isso marca o `Future` como pronto e libera quem estava esperando por ele.
+
+# Sychronization | `.lock()`
+
+### O `.lock()` impede que outras funções assíncronas executem o mesmo trecho de código ao mesmo tempo. Elas só conseguem entrar depois que o lock é liberado.
+
+### Imagine que você criou uma função assíncrona, mas não quer que parte do código sejá executada ao mesmo tempo por mais de uma execução, por exemplo, por questão de segurança ou consistência dos dados. Com o `asyncio.Lock()` instanciado corretamente, o código continua rodando de forma assíncrona. Porém, quando a execução chega em `async with lock:`, apenas uma execução assíncrona por vez pode entrar nesse bloco de código. As outras execuções assíncronas ficam aguardando o lock ser liberado, sem travar o event loop. Assim que a execução sai do bloco protegido, o lock é liberado e a próxima execução pode entrar.
+
+```py
+import asyncio
+
+# A shared variable
+shared_resource = 0
+
+# An asyncio Lock
+lock = asyncio.Lock()
+
+async def modify_shared_resource():
+    global shared_resource
+    async with lock:
+        # Critical section starts
+        print(f"Resource before modification: {shared_resource}")
+        shared_resource += 1 # Modify the shared resource
+        await asyncio.sleep(1) # Simulate an IO operation
+        print(f"Resource after modification: {shared_resource}")
+        # Critical section ends
+
+async def main():
+    await asyncio.gather(
+        *(modify_shared_resource() for _ in range(5))
+    )
+
+asyncio.run(main())
+```
+
+# Semaphore | `.Semaphore()`
+
+### O `.Semaphore()` funciona parecido com o `.lock()` mas dessa fez permite a gente colocar **<u>QUANTAS</u>** funções (rotinas) queremos rodar ao mesmo tempo.
+
+```py
+import asyncio
+
+async def access_resource(semaphore, resource_id):
+    async with semaphore:
+        # Simula o acesso a um recurso limitado
+        print(f"Accessing resource {resource_id}")
+        await asyncio.sleep(1)  # Simula trabalho com o recurso
+        print(f"Releasing resource {resource_id}")
+
+async def main():
+    # Permite apenas 2 acessos concorrentes
+    semaphore = asyncio.Semaphore(2)
+
+    await asyncio.gather(
+        *(access_resource(semaphore, i) for i in range(5))
+    )
+
+asyncio.run(main())
+```
+
+`asyncio.Semaphore()` → Nesse exemplo podemos setar <u>quantos</u> eventos quemos rodar.
+
+# | `.Event()`
+
+### Imagine que você tem várias funções assíncronas rodando, mas elas não podem continuar até que algo específico aconteça. Esse “algo” não é tempo (`sleep`), nem o fim de outra função, mas um **sinal**. É exatamente isso que o `asyncio.Event()` representa:
+
+### No início, o evento está desligado (_unset_). Todas as funções que chamarem `await event.wait()` vão parar ali e ficar aguardando. Quando outra parte do código chama `event.set()`:
+
+- O evento é ligado.
+- Todas as funções bloqueadas são liberadas ao mesmo tempo.
+- A execução continua normalmente.
+
+### Diferente do `Lock`, aqui ninguém disputa um recurso. As funções apenas esperam um sinal para continuar. a execução continua normalmente.
+
+```python
+import asyncio
+
+async def waiter(event):
+    print("waiting for the event to be set")
+    await event.wait()
+    print("event has been set, continuing execution")
+
+async def setter(event):
+    await asyncio.sleep(2)
+    event.set()
+    print("event has been set!")
+    # Simulate doing some work
+
+async def main():
+    event = asyncio.Event()
+    await asyncio.gather(
+        waiter(event),
+        setter(event)
+    )
+
+asyncio.run(main())
+```
+
+`event = asyncio.Event()` →
+
+`await event.wait()` →
+
+`event.set()` →
