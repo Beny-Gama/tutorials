@@ -17,7 +17,7 @@ python3 -m venv .venv
 to be sure that we are in the virtual environment:
 
 ```bash
-source .venv/vin/active
+source .venv/bin/active
 ```
 
 <br/>
