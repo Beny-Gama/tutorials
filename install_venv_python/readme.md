@@ -14,6 +14,12 @@ For best practice reasons, the recommended name is `.venv`. But you can name it 
 python3 -m venv .venv
 ```
 
+to be sure that we are in the virtual environment:
+
+```bash
+source .venv/vin/active
+```
+
 <br/>
 
 # Considerations
