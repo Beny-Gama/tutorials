@@ -5,13 +5,13 @@
 In the file location, go to the terminal and install:
 
 ```bash
--m venv filename
+python3 -m venv filename
 ```
 
 For best practice reasons, the recommended name is `.venv`. But you can name it whatever you want.
 
 ```bash
--m venv .venv
+python3 -m venv .venv
 ```
 
 <br/>
